@@ -1,10 +1,9 @@
-FROM php:8.0-fpm
+FROM php:8.2-fpm
 
+# تنظیم دایرکتوری کاری
+WORKDIR /var/www/html
 
-# Set working directory
-WORKDIR /var/www
-
-# Install dependencies
+# نصب وابستگی‌ها
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -19,31 +18,27 @@ RUN apt-get update && apt-get install -y \
     curl \
     libzip-dev
 
-# Clear cache
+# پاک‌سازی کش
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install extensions
+# نصب افزونه‌ها
 RUN docker-php-ext-install pdo_mysql zip exif pcntl gd
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 
-# Install composer
+# نصب کامپوزر
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Add user for laravel application
+# اضافه کردن کاربر برای اپلیکیشن لاراول
 RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
-# Copy existing application directory contents
-#COPY .. /var/www
+# کپی کردن محتویات اپلیکیشن
+ADD . /var/www/html
+RUN chown -R www:www /var/www/html
 
-# Copy existing application directory permissions
-#COPY --chown=www:www . /var/www
-
-ADD . /var/www
-RUN chown -R www:www /var/www
-# Change current user to www
+# تغییر کاربر فعلی به www
 USER www
 
-# Expose port 9000 and start php-fpm server
+# باز کردن پورت 9000 و شروع سرور php-fpm
 EXPOSE 9000
 CMD ["php-fpm"]
