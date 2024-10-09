@@ -1,7 +1,7 @@
 FROM php:8.2-fpm
 
 # تنظیم دایرکتوری کاری
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # نصب وابستگی‌ها
 RUN apt-get update && apt-get install -y \
@@ -33,8 +33,8 @@ RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # کپی کردن محتویات اپلیکیشن
-ADD . /var/www/html
-RUN chown -R www:www /var/www/html
+ADD . /var/www
+RUN chown -R www:www /var/www
 
 # تغییر کاربر فعلی به www
 USER www
