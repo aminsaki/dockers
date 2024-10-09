@@ -1,7 +1,7 @@
 version: '3'
 services:
 
-    #PHP Service
+    # سرویس PHP
     app:
         build:
             context: .
@@ -13,14 +13,14 @@ services:
         environment:
             SERVICE_NAME: app
             SERVICE_TAGS: dev
-        working_dir: /var/www
+        working_dir: /var/www/html
         volumes:
-            - ./../public:/var/www
+            - ./../public:/var/www/html
             - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
         networks:
             - app-network
 
-    #Nginx Service
+    # سرویس Nginx
     webserver:
         image: nginx:alpine
         container_name: webserver
@@ -30,19 +30,19 @@ services:
             - "80:80"
             - "443:443"
         volumes:
-            - ./../public:/var/www
+            - ./../public:/var/www/html
             - ./nginx/conf.d/:/etc/nginx/conf.d/
         networks:
             - app-network
 
-    #MySQL Service
+    # سرویس MySQL
     db:
-        image: mysql
+        image: mysql:8.0
         container_name: db
         restart: unless-stopped
         tty: true
         ports:
-            - "3307:3307"
+            - "3306:3306"  # اطمینان از تطابق پورت‌ها
         environment:
             MYSQL_DATABASE: crm_db
             MYSQL_ROOT_PASSWORD: 123456
@@ -51,11 +51,12 @@ services:
         networks:
             - app-network
 
-#Docker Networks
+# شبکه‌های داکر
 networks:
     app-network:
         driver: bridge
-#Volumes
+
+# ولوم‌ها
 volumes:
     dbdata:
         driver: local
