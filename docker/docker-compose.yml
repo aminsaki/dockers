@@ -1,7 +1,6 @@
 version: '3'
 services:
 
-    # سرویس PHP
     app:
         build:
             context: .
@@ -35,14 +34,13 @@ services:
         networks:
             - app-network
 
-    # سرویس MySQL
     db:
         image: mysql:8.0
         container_name: db
         restart: unless-stopped
         tty: true
         ports:
-            - "3306:3306"  # اطمینان از تطابق پورت‌ها
+            - "3306:3306"  
         environment:
             MYSQL_DATABASE: crm_db
             MYSQL_ROOT_PASSWORD: 123456
@@ -51,12 +49,10 @@ services:
         networks:
             - app-network
 
-# شبکه‌های داکر
 networks:
     app-network:
         driver: bridge
 
-# ولوم‌ها
 volumes:
     dbdata:
         driver: local
